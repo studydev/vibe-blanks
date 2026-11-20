@@ -1,0 +1,57 @@
+/* 도현의 노트 모양 (notes/note.js). .v-note 아래에만 적용한다. */
+.v-note {
+    --bg: #f6f3ec; --card: #fffdf8; --ink: #1d2433; --sub: #5b6475; --rule: #e7e0d2;
+    --seoyun: #7DB9E8; --dohyun: #E9DCC3; --sua: #E3B341; --junho: #2F3E6B; --ai: #8250df; --me: #d4741f; --ok: #1f883d; --req: #1f6feb;
+  font-size: 15px; line-height: 1.65;
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; background: #f0ece2; border-radius: 5px; padding: 0 4px; }
+  .note { background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 20px 22px; margin: 0 0 22px; box-shadow: 0 2px 10px rgba(60, 40, 10, .05); }
+  .note > header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; border-bottom: 2px dashed var(--rule); padding-bottom: 10px; margin-bottom: 14px; }
+  .blank { font-size: 12.5px; font-weight: 800; color: #8a6d3b; border: 1.5px dashed #c9b48a; border-radius: 99px; padding: 1px 10px 1px 3px; display: inline-flex; align-items: center; gap: 6px; }
+  .blank i { font-style: normal; width: 19px; height: 19px; border: 1.5px dashed #c9b48a; border-radius: 5px; display: grid; place-items: center; font-size: 11px; }
+  .note h2 { margin: 0; font-size: 20px; }
+  .terms { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; }
+  .terms span { font-size: 12.5px; font-weight: 700; background: #1d2433; color: #fff; border-radius: 99px; padding: 1px 10px; }
+  .terms span i { font-style: normal; font-weight: 500; opacity: .75; margin-left: 4px; }
+  .grid { display: grid; grid-template-columns: 170px 1fr; gap: 16px; align-items: start; }
+  .webtoon { margin: 0; background: #fff; border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+  .webtoon img { width: 100%; display: block; }
+  .webtoon figcaption { padding: 8px 10px 10px; font-size: 13px; line-height: 1.45; }
+  .webtoon .cap { font-size: 11px; font-weight: 800; color: var(--sub); }
+  .webtoon p { margin: 4px 0 0; }
+  .webtoon p.nar { font-style: italic; color: var(--sub); }
+  h3 { font-size: 13px; margin: 14px 0 4px; color: var(--sub); letter-spacing: .02em; }
+  h3:first-child { margin-top: 0; }
+  .what { margin: 0; font-size: 15.5px; }
+  .lanes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .lane { border: 1.5px solid var(--rule); border-radius: 10px; padding: 6px 8px; font-size: 12.5px; color: #a3a9b5; background: #fff; min-height: 58px; }
+  .lane b { display: block; font-size: 11.5px; color: #a3a9b5; }
+  .lane.on { border-color: var(--req); color: var(--ink); background: #f2f7ff; }
+  .lane.on b { color: var(--req); }
+  .lane.on.ai { border-color: var(--ai); background: #f7f2ff; } .lane.on.ai b { color: var(--ai); }
+  .decide { margin: 0; background: #fff6ec; border: 1.5px solid #f2c79b; border-radius: 10px; padding: 7px 12px; }
+  .go { display: inline-block; margin-top: 12px; text-decoration: none; background: var(--req); color: #fff; font-weight: 800; border-radius: 10px; padding: 8px 14px; }
+  details.more { margin-top: 14px; border: 1px solid var(--rule); border-radius: 12px; padding: 8px 14px; background: #fff; }
+  details.more summary { cursor: pointer; font-weight: 800; color: var(--sub); }
+  details.more h4 { margin: 12px 0 4px; font-size: 14px; }
+  details.more ul { margin: 0; padding-left: 18px; font-size: 14px; }
+  details.more li { margin: 3px 0; }
+  .ask { border: 2px solid var(--seoyun); border-radius: 10px; padding: 6px 10px; margin: 4px 0; font-weight: 600; font-size: 14px; white-space: pre-wrap; }
+  .ask small { display: block; font-size: 11.5px; color: #2f6fa8; font-weight: 800; }
+  .hands { display: flex; flex-wrap: wrap; gap: 5px; }
+  .hand { font-size: 12px; border-radius: 8px; padding: 1px 7px; border: 1.5px solid var(--h); background: #fff; }
+  .hand b { color: var(--h); margin-right: 4px; }
+  .hand.h-file { --h: #2F7BEA; } .hand.h-term { --h: #1d2433; } .hand.h-mcp { --h: var(--ai); } .hand.h-me { --h: var(--me); }
+  .links a { color: var(--req); }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+    .webtoon { display: grid; grid-template-columns: 110px 1fr; }
+    .lanes { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .blank, .terms span { white-space: nowrap; }
+  @media (max-width: 640px) {
+    .note { padding: 16px 14px; }
+    .note > header h2 { flex-basis: 100%; order: 2; }
+    .terms { margin-left: 0; order: 3; }
+  }
+}

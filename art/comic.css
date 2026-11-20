@@ -1,0 +1,26 @@
+/* 웹툰 쪽·도식 모양 (art/comic.js). 말풍선 모양은 bubbles.css. 다른 화면과 겹치지 않게 .v-comic 아래에만 적용한다. */
+.v-comic {
+  --seoyun: #7DB9E8; --dohyun: #E9DCC3; --sua: #E3B341; --junho: #2F3E6B;
+  .ep { max-width: 1000px; margin: 24px auto 40px; }
+  .ep-h { display: flex; align-items: baseline; gap: 14px; margin: 0 0 10px; }
+  .ep-h h1 { font-size: 26px; margin: 0; }
+  .ep-h small { color: #5b6475; font-size: 15px; }
+  .page { background: #fff; padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; box-shadow: 0 6px 24px rgba(20, 40, 80, .12); margin-bottom: 18px; }
+  .page.single { margin: 0; box-shadow: none; }
+  .panel.dia { background: linear-gradient(#f4f8ff, #e8f0fb); }
+  .dia .loop { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .dia .hub { position: absolute; left: 50%; top: 34.7%; transform: translate(-50%, -50%); text-align: center; font: 700 3.3cqw/1.35 sans-serif; color: #2F3E6B; }
+  .dia .node { position: absolute; transform: translate(-50%, -50%); width: 24cqw; background: #fff; border: .6cqw solid #2F7BEA; border-radius: 3cqw; padding: 1.4cqw 1cqw; text-align: center; box-shadow: 0 .6cqw 1.6cqw rgba(20, 40, 80, .15); }
+  .dia .node.people { border-color: #E3B341; }
+  .dia .node b { display: block; font-size: 3.6cqw; }
+  .dia .node small { display: block; font-size: 2.6cqw; color: #5b6475; }
+  .dia .blanks { position: absolute; left: 4cqw; right: 4cqw; bottom: 3.5cqw; display: grid; grid-template-columns: 1fr 1fr; gap: 1.4cqw; }
+  .dia .blank { display: grid; grid-template-columns: 6cqw 1fr; grid-template-rows: auto auto; column-gap: 1.6cqw; align-items: center; background: #fff; border: .45cqw solid #2F7BEA; border-radius: 1.6cqw; padding: 1cqw 1.6cqw; }
+  .dia .blank .no { grid-row: 1 / 3; width: 6cqw; height: 6cqw; border-radius: 1.2cqw; background: #2F7BEA; color: #fff; display: grid; place-items: center; font: 800 3.4cqw sans-serif; }
+  .dia .blank .nm { font: 700 2.9cqw/1.2 sans-serif; }
+  .dia .blank .fn { font: 600 2.5cqw/1.2 sans-serif; color: #2F7BEA; }
+  .dia .blank.plus { grid-column: 1 / -1; border-color: #7C5CFF; } .dia .blank.plus .no { background: #7C5CFF; } .dia .blank.plus .fn { color: #7C5CFF; }
+  .num { position: absolute; right: 1.6cqw; bottom: 1.2cqw; z-index: 4; font: 700 2.6cqw sans-serif; color: rgba(255,255,255,.9); text-shadow: 0 0 3px rgba(0,0,0,.6); }
+
+  @media (max-width: 720px) { .page { grid-template-columns: 1fr; padding: 10px; gap: 10px; } }
+}

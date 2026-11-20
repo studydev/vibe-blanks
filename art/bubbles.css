@@ -1,0 +1,74 @@
+/* 말풍선 층 (docs/03-asset-bible.md 8절). 그림에는 글자·말풍선을 넣지 않고, 컷 그림 위에 HTML 로 얹는다.
+   <figure class="panel"><img src="cut/ep1-06.png"> <div class="bub …" style="left:…%;top:…%">…</div></figure>
+   크기는 컷 너비 기준(cqw)이라 컷을 크게 보든 작게 보든 비율이 같다. 위치는 컷 안의 %로 준다(위쪽 4분의 1 이 말풍선 자리). */
+.panel { position: relative; container-type: inline-size; margin: 0; }
+.panel > img { width: 100%; display: block; }
+.bub {
+  --seoyun: #7DB9E8; --dohyun: #E9DCC3; --sua: #E3B341; --junho: #2F3E6B; --line: #5b6475;
+  position: absolute; color: #1d2433;
+  font: 600 3.7cqw/1.32 -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+}
+/* 이름표: 정체성 색 바탕 (준호처럼 짙은 색은 흰 글자) */
+.bub .tag { position: absolute; top: -3.2cqw; right: 4cqw; background: var(--c); color: #1d2433; border-radius: 99px; padding: .3cqw 2.4cqw; font-size: 3.3cqw; font-weight: 700; }
+.bub .tag.dark { color: #fff; }
+.bub .tag { white-space: nowrap; }
+
+/* 메시지 — 내가 보낸 것: 메신저의 내 말풍선 (하늘색, 오른쪽 위 모서리만 덜 둥글다) */
+.bub.msg { background: #cfe6f8; border-radius: 3.6cqw 1cqw 3.6cqw 3.6cqw; padding: 2.2cqw 3.2cqw; max-width: 60cqw; box-shadow: 0 .6cqw 1.8cqw rgba(20, 40, 80, .2); }
+
+/* 멀리서 하는 말 — 그림에 없는 사람이 메시지로 말할 때(사용자 요청, 2026-11-19).
+   점선 테두리 + 말하는 사람의 표정 얼굴 원(art/ref/face-<인물>-<칸>.png) + 그 말. 꼬리는 받는 사람(휴대폰) 쪽으로 점 셋. */
+.bub.remote { display: flex; align-items: center; gap: 2.4cqw; background: rgba(255, 255, 255, .95); border: .75cqw dotted var(--line); border-radius: 6cqw; padding: 1.8cqw 3.4cqw 1.8cqw 1.8cqw; max-width: 76cqw; box-shadow: 0 .6cqw 1.8cqw rgba(20, 40, 80, .18); }
+.bub.remote .face { width: 13cqw; height: 13cqw; border-radius: 50%; border: .9cqw solid var(--c); flex: none; background: #fff; display: block; }
+.bub.remote .tail { position: absolute; top: 100%; width: 1px; height: 1px; }
+.bub.remote .tail i { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, .95); border: .55cqw dotted var(--line); }
+.bub.remote .tail i:nth-child(1) { width: 4.6cqw; height: 4.6cqw; top: 1.6cqw; }
+.bub.remote .tail i:nth-child(2) { width: 3.3cqw; height: 3.3cqw; top: 6.6cqw; }
+.bub.remote .tail i:nth-child(3) { width: 2.2cqw; height: 2.2cqw; top: 10.8cqw; }
+/* 꼬리: 말풍선 아래 --tx 위치(말풍선 너비의 %)에서 받는 사람 쪽으로. tail-bl = 왼쪽 아래로, tail-br = 오른쪽 아래로.
+   얼굴·손·화면을 가리지 않게 컷마다 --tx 와 말풍선 위치를 고른다(1화 ⑥ 첫 시안에서 꼬리가 이마를 가렸다). */
+.bub.remote .tail { left: var(--tx, 50%); }
+.bub.remote.tail-bl .tail i:nth-child(1) { left: 0; } .bub.remote.tail-bl .tail i:nth-child(2) { left: -2.6cqw; } .bub.remote.tail-bl .tail i:nth-child(3) { left: -4.6cqw; }
+.bub.remote.tail-br .tail i:nth-child(1) { left: 0; } .bub.remote.tail-br .tail i:nth-child(2) { left: 3cqw; } .bub.remote.tail-br .tail i:nth-child(3) { left: 5.6cqw; }
+
+/* 분할 컷 틀 — 칸마다 세로 그림의 가운데 절반을 잘라 나란히 둔다(전화: 왼쪽 서윤, 오른쪽 상대). 컷 비율은 다른 컷과 같은 2:3. */
+.panel.split { aspect-ratio: 2 / 3; display: flex; gap: 1.2cqw; background: #fff; }
+.panel.split > img { width: calc(50% - .6cqw); height: 100%; object-fit: cover; object-position: center; }
+
+/* 그림 속 빈 이름표에 얹는 글자 — 그림에는 글자를 넣지 않고 빈 이름표만 그린 뒤 HTML 로 쓴다(2화 ③ 폴더 이름).
+   style="left:…%;top:…%;--r:…deg" 는 이름표의 가운데와 기울기. */
+.lbl { position: absolute; transform: translate(-50%, -50%) rotate(var(--r, 0deg)); font: 700 2.4cqw/1 -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; color: #3b4556; white-space: nowrap; }
+
+/* 사선 분할 컷 틀(사용자 요청, 2026-11-19: 세로로 나누면 공간이 아깝다) — 왼쪽 아래(높이 57%)에서 오른쪽 위(43%)로 기운 선으로 나눈다.
+   위 칸(.a, 서윤)과 아래 칸(.b, 상대)은 각각 컷 높이의 60%짜리 가로 그림이고, 선을 따라 흰 틈을 두고 자른다. */
+.panel.diag { aspect-ratio: 2 / 3; background: #fff; overflow: hidden; }
+.panel.diag > img { position: absolute; left: 0; width: 100%; height: 60%; object-fit: cover; object-position: center; }
+.panel.diag > img.a { top: 0; clip-path: polygon(0 0, 100% 0, 100% 70.6%, 0 92.8%); }
+.panel.diag > img.b { top: 40%; clip-path: polygon(0 29.4%, 100% 7.2%, 100% 100%, 0 100%); }
+
+/* 가로 띠 세 칸(3화 ⑧: 세 사람이 각자 다른 곳에서) — 칸마다 가로 그림의 가운데 띠를 쓴다. */
+.panel.bands { aspect-ratio: 2 / 3; display: flex; flex-direction: column; gap: 1.2cqw; background: #fff; }
+.panel.bands > img { width: 100%; flex: 1; min-height: 0; object-fit: cover; object-position: center; }
+.lbl.pill { background: #fff; color: #1d2433; border-radius: 99px; padding: .8cqw 2.4cqw; font-size: 3.2cqw; box-shadow: 0 .5cqw 1.4cqw rgba(20, 40, 80, .18); }
+
+/* ── 말풍선 종류 (03-asset-bible 8절). comic.html 이 art/lines.js 의 글을 컷 위에 얹는다. 꼬리는 JS 가 SVG 로 그린다. ── */
+.panel { aspect-ratio: 2 / 3; overflow: hidden; }
+.panel > img:only-of-type, .panel > img.cut { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.bub b { font-weight: 800; }
+.bub { z-index: 3; max-width: 82cqw; }
+.tails { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: visible; }
+/* 대사·전화: 흰 둥근 말풍선 + 위쪽 정체성 색 이름표 */
+.bub.say, .bub.tel { min-width: 18cqw; background: #fff; border: .45cqw solid #1d2433; border-radius: 7cqw; padding: 2.2cqw 3.6cqw; text-align: center; }
+.bub.say .tag, .bub.tel .tag { top: -3.4cqw; left: 50%; right: auto; transform: translateX(-50%); }
+/* 속마음: 구름(둥근 가장자리 + 연한 테두리), 꼬리는 작은 원 셋 */
+.bub.think { background: #fff; border: .45cqw solid #8a94a6; border-radius: 8cqw; padding: 2.4cqw 4cqw; color: #3b4556; font-style: italic; box-shadow: 0 0 0 1.2cqw rgba(255,255,255,.85); }
+/* 내레이션: 연한 남색 네모, 흰 글자 */
+.bub.nar { background: rgba(47, 62, 107, .92); color: #fff; border-radius: 1cqw; padding: 1.8cqw 3cqw; font-weight: 600; }
+/* 입력(사람 → AI): 입력창 막대 + 키보드 아이콘, 테두리는 입력한 사람 색 */
+.bub.in { background: #fff; border: .7cqw solid var(--c); border-radius: 3cqw; padding: 1.8cqw 3cqw 1.8cqw 2.2cqw; display: flex; gap: 2cqw; align-items: center; box-shadow: 0 .6cqw 1.8cqw rgba(20, 40, 80, .18); }
+.bub.in svg { width: 6cqw; height: 6cqw; flex: none; }
+/* AI 대답: 둥근 네모, 보라 테두리 + ✦ */
+.bub.ai { background: #fff; border: .7cqw solid #7C5CFF; border-radius: 3cqw; padding: 1.8cqw 3cqw; box-shadow: 0 .6cqw 1.8cqw rgba(60, 30, 140, .18); }
+.bub.ai .star { color: #7C5CFF; font-weight: 800; margin-right: 1.2cqw; }
+/* 화면 표시: 작은 회색 라벨 */
+.bub.scr { background: rgba(60, 68, 82, .88); color: #fff; border-radius: 99px; padding: .9cqw 2.6cqw; font-size: 3cqw; font-weight: 600; }
