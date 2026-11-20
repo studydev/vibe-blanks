@@ -101,7 +101,7 @@ function bookView() {
   return `<section class="ep-head bk-head"><p class="eyebrow" id="bk-part"></p><h1 id="bk-title"></h1><span class="chip-blank" id="bk-blank"></span></section>
     <div class="book">
       <div class="bk-stage v-comic" id="bk-stage" tabindex="0" aria-roledescription="만화책" aria-label="웹툰. 왼쪽·오른쪽 화살표 키나 화면 왼쪽·오른쪽을 눌러 넘깁니다.">${ITEMS.map(pageHtml).join('')}</div>
-      <div class="bk-bar"><button type="button" class="bk-nav" data-turn="-1"><span aria-hidden="true">‹</span> 앞 장</button><span class="bk-count" id="bk-count" aria-live="polite"></span><button type="button" class="bk-nav" data-turn="1">다음 장 <span aria-hidden="true">›</span></button></div>
+      <div class="bk-bar"><button type="button" class="bk-nav" data-turn="-1"><span aria-hidden="true">‹</span> 앞 장</button><span class="bk-mid"><button type="button" class="bk-play" id="bk-play" aria-pressed="false" title="대사 듣기 (스페이스)"><span class="ic">▶</span><span class="tx">듣기</span></button><label class="bk-rate" title="재생 속도">속도 <input type="range" id="bk-rate" min="0.75" max="2" step="0.05"><output id="bk-rate-v"></output></label><span class="bk-count" id="bk-count" aria-live="polite"></span></span><button type="button" class="bk-nav" data-turn="1">다음 장 <span aria-hidden="true">›</span></button></div>
       <div class="bk-progress" aria-hidden="true"><i id="bk-progress"></i></div>
       <nav class="bk-toc" aria-label="화 목록">${EPS.map(e => `<button type="button" data-go="${e}">${e === 'E' ? '에필로그' : e + '화'}</button>`).join('')}</nav>
     </div>`;
@@ -167,8 +167,10 @@ const Book = (() => {
     else if (spread) flip(from, i);
     else { paint(); const p = pages[i]; p.classList.remove('turn-fwd', 'turn-back'); void p.offsetWidth; p.classList.add(i > from ? 'turn-fwd' : 'turn-back'); }
     meta();
+    window.Player?.onPage();
   }
-  const turn = d => show(cur + d * (spread ? 2 : 1));
+  const turn = d => { const before = cur; show(cur + d * (spread ? 2 : 1)); return cur !== before; };
+  const openPages = () => visible(cur).map(k => pages[k]);
   function mount(view) {
     view.innerHTML = bookView(); view.dataset.view = 'book';
     stage = document.getElementById('bk-stage'); pages = [...stage.querySelectorAll('.bk-page')]; cur = 0;
@@ -194,8 +196,73 @@ const Book = (() => {
     if (!stage?.isConnected || !document.getElementById('drawer').hidden || e.target.closest('input, textarea')) return;
     if (e.key === 'ArrowRight') { e.preventDefault(); turn(1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); turn(-1); }
   });
-  return {mount, go, turn, active: () => !!stage?.isConnected};
+  return {mount, go, turn, openPages, flipping: () => !!flipping, active: () => !!stage?.isConnected};
 })();
+
+// ── 대사 듣기: 펼친 쪽의 대사를 말풍선 순서대로 → 다 끝나면 다음 장으로 넘기며 이어서 ──
+// 음성: Azure Speech MAI 음성(art/voice.mjs 배역·감정, node scripts/build-voice.mjs → site/audio/*.m4a, art/voice.data.js)
+const Player = (() => {
+  const audio = new Audio(); audio.preload = 'auto';
+  const KEY = 'vibe-voice:v1';
+  let rate = (() => { try { return Number(JSON.parse(localStorage.getItem(KEY))?.rate) || 1.2; } catch { return 1.2; } })();
+  let playing = false, queue = [], idx = 0, timer = 0, lit = null, seq = 0;
+  const btn = () => document.getElementById('bk-play');
+  function ui() {
+    const b = btn(); if (!b) return;
+    b.setAttribute('aria-pressed', String(playing)); b.querySelector('.ic').textContent = playing ? '❚❚' : '▶'; b.querySelector('.tx').textContent = playing ? '멈춤' : '듣기';
+    const r = document.getElementById('bk-rate'), v = document.getElementById('bk-rate-v');
+    if (r) { r.value = rate; v.textContent = `${rate.toFixed(2).replace(/0$/, '')}×`; }
+  }
+  function light(el) { lit?.classList.remove('speaking'); lit = el; el?.classList.add('speaking'); }
+  // 펼친 쪽들의 대사: 왼쪽 쪽 → 오른쪽 쪽, 컷 안에서는 말풍선 순서
+  function build() {
+    return Book.openPages().flatMap(pg => {
+      const panel = pg.querySelector('.panel[data-id]'); if (!panel) return [];
+      const bubs = panel.querySelectorAll('.bub');
+      return (VOICE.clips[panel.dataset.id] || []).map((c, i) => c && {...c, el: bubs[i]}).filter(Boolean);
+    });
+  }
+  function step() {
+    clearTimeout(timer); light(null);
+    if (!playing) return;
+    if (idx >= queue.length) {      // 이 펼침면 끝 → 다음 장 (대사 없는 화 끝 쪽은 잠깐 머문다)
+      timer = setTimeout(() => { if (playing && !Book.turn(1)) stop(); }, queue.length ? 450 / rate : 2600);
+      return;
+    }
+    const c = queue[idx++], my = ++seq; light(c.el);
+    let moved = false;
+    const go = ms => { if (moved || my !== seq || !playing) return; moved = true; timer = setTimeout(step, ms); };
+    // 소리를 못 내도(불러오기 실패·해독기 없음) 대사 길이만큼 말풍선을 밝혀 두고 다음으로 — 자동 재생이 막혔을 때만 멈춘다
+    audio.onended = () => go(220 / rate);
+    audio.onerror = () => go(c.d * 1000 / rate);
+    audio.src = `audio/${c.f}`; audio.playbackRate = rate;
+    audio.play().catch(err => { if (err?.name === 'NotAllowedError') stop(); else go(c.d * 1000 / rate); });
+  }
+  function start() { if (!Book.active()) return; playing = true; ui(); queue = build(); idx = 0; step(); }
+  function stop() { playing = false; seq++; clearTimeout(timer); audio.pause(); light(null); ui(); }
+  function onPage() {             // 손으로 넘겨도, 자동으로 넘겨도 새 펼침면의 처음부터
+    ui();
+    if (!playing) return;
+    seq++; clearTimeout(timer); audio.pause(); light(null);
+    timer = setTimeout(() => { queue = build(); idx = 0; step(); }, Book.flipping() ? 760 : 120);
+  }
+  document.addEventListener('click', e => {
+    if (e.target.closest('#bk-play')) playing ? stop() : start();
+  });
+  document.addEventListener('input', e => {
+    if (e.target.id !== 'bk-rate') return;
+    rate = Number(e.target.value); audio.playbackRate = rate; ui();
+    try { localStorage.setItem(KEY, JSON.stringify({rate})); } catch { /* 저장 못 해도 된다 */ }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.code !== 'Space' || !Book.active() || e.target.closest('input, textarea, select, button, a') || !document.getElementById('drawer').hidden) return;
+    e.preventDefault(); playing ? stop() : start();
+  });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && playing) stop(); });
+  window.addEventListener('hashchange', () => { if (!location.hash.startsWith('#/ep/')) stop(); });
+  return {start, stop, onPage, playing: () => playing, audio};
+})();
+window.Player = Player;
 
 function labs() {
   const tile = L => `<a class="lab-tile ${L.required ? '' : 'opt'} ${state.labs.includes(L.id) ? 'done' : ''}" href="#/lab/${L.id}"><span class="big-n">${L.id}</span>
