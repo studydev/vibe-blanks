@@ -68,7 +68,7 @@ function home() {
       <div class="blks one">${blank('E')}</div></section>
     <section class="sect"><h2>등장인물</h2><div class="cast">${CAST.map(([k, n, who, role]) => `<div class="person">${k === 'ai' ? '<span class="face ai">✦</span>' : `<img class="face" style="--c:var(--${k})" src="img/ref/char-${k}-face.webp" alt="">`}<div><b>${n}</b><p>${esc(who)}</p><small>${esc(role)}</small></div></div>`).join('')}</div>
       <p class="motto">방법은 도현이, 손은 AI 가, 결정은 서윤이.</p></section>
-    <section class="sect how"><h2>이렇게 진행해요</h2><ol class="how-steps"><li><span>01</span><b>웹툰 한 화</b>약 2분. 서윤이 겪는 빈칸</li><li><span>02</span><b>직접 해 보기</b>서윤이 AI 에게 한 말을 내 AI 에게. 입력과 성공한 모습만 보고 따라 하기</li><li><span>03</span><b>📒 도현의 노트</b>궁금하면 정확한 설명. 나중에 펼쳐 봐도 된다</li></ol>
+    <section class="sect how"><h2>이렇게 진행해요</h2><ol class="how-steps"><li><span>01</span><b>웹툰 한 화</b>약 2분. 서윤이 바이브 코딩으로 앱을 만들다 막힌 순간과, 그걸 풀어 가는 이야기</li><li><span>02</span><b>직접 해 보기</b>서윤이 바이브 코딩하듯 나도 AI 도구에게 따라서 해 보기</li><li><span>03</span><b>📒 도현의 GitHub Tips</b>궁금하면 정확한 설명. 나중에 펼쳐 봐도 된다</li></ol>
       <p><a href="#/labs">실습 전체와 120분 시간표 →</a></p></section>`;
 }
 
@@ -80,12 +80,12 @@ function endLeft(ep) {
   const n = noteOf(ep), say = n.lines.find(b => b.who === 'dohyun') || n.lines[0];
   if (ep === 'E') return `<div class="end-in"><p class="end-k">에필로그 끝</p><p class="end-lbl">바이브 코딩의 빈칸, 다 채웠다</p>
     <div class="end-all">${EPS.map(e => `<span class="${isRead(e) || e === 'E' ? 'on' : ''}">${blankBox(e)}<b>${esc(blankName(e))}</b></span>`).join('')}</div>
-    <button type="button" class="btn note-btn" data-open-note="E">📒 도현의 노트 — ${esc(n.title)}</button></div>`;
+    <button type="button" class="btn note-btn" data-open-note="E">📒 도현의 GitHub Tips — ${esc(n.title)}</button></div>`;
   return `<div class="end-in"><p class="end-k">${epName(ep)} 끝</p><p class="end-lbl">이번 화에서 채운 빈칸</p>
     <div class="end-blank">${blankBox(ep)}<b>${esc(blankName(ep))}</b><small>${esc(FEATURE[ep])}</small></div>
     <figure class="end-say"><img src="img/ref/char-dohyun-face.webp" alt=""><blockquote>${esc(say.t.replace(/\*\*/g, '').replace(/\n/g, ' '))}</blockquote></figure>
     <p class="end-what">정확히는 — <b>${esc(n.title)}</b></p>
-    <button type="button" class="btn note-btn" data-open-note="${ep}">📒 도현의 노트 펼치기</button></div>`;
+    <button type="button" class="btn note-btn" data-open-note="${ep}">📒 도현의 GitHub Tips 펼치기</button></div>`;
 }
 function endRight(ep) {
   const L = labOf(ep), next = EPS[EPS.indexOf(ep) + 1];
@@ -269,7 +269,7 @@ function labs() {
     <span class="t"><small>${L.ep ? `웹툰 ${epName(L.ep)} · ${esc(blankName(L.ep))}` : '시작 전'}</small><b>${esc(L.title)}</b><em>${L.required ? '필수' : '선택'} · ${L.min ? `약 ${L.min}분` : esc(L.when)}${state.labs.includes(L.id) ? ' · ✓ 마침' : ''}</em></span></a>`;
   return `<div class="v-flow"><div class="band"><span>직접 해 보기 <b>「주말 어디갈까」</b></span><span>내가 한 말 → AI 가 한 일 → 바뀐 결과 <i>내 AI 도구로 그대로 따라 하기</i></span></div></div>
     <section class="labs-page"><p class="eyebrow"><i></i>실습</p><h1>웹툰 한 화, 실습 하나</h1>
-      <p class="lead">서윤이 AI 에게 한 말을 내 AI 에게 그대로 해 봅니다. 실습 0 은 워크숍 전에 집에서, 필수 실습만으로 120분 안에 끝나게 짰습니다.</p>
+      <p class="lead">서윤이 바이브 코딩하듯 나도 AI 도구에게 따라서 해 봅니다. 실습 0 은 워크숍 전에 집에서, 필수 실습만으로 120분 안에 끝나게 짰습니다.</p>
       <div class="lab-grid">${LABS.map(tile).join('')}</div>
       <div class="v-lab"><section class="plan">${Cards.plan().replace(/<div class="toc">[\s\S]*$/, '')}</section></div></section>`;
 }
@@ -325,7 +325,7 @@ function route() {
   else if (kind === 'basics') { Course.home(view, 'basics'); title = `GitHub 직접 익히기 · ${title}`; }
   else if (kind === 'badges') { Course.badges(view); title = `뱃지 · ${title}`; }
   else if (kind === 'record') { Course.record(view); title = `내 기록 · ${title}`; }
-  else if (kind === 'note' && noteOf(id)) { view.innerHTML = notePage(id); title = `도현의 노트 · ${noteOf(id).title}`; }
+  else if (kind === 'note' && noteOf(id)) { view.innerHTML = notePage(id); title = `도현의 GitHub Tips · ${noteOf(id).title}`; }
   else view.innerHTML = home();
   document.title = title;
   setView(['lab', 'labs', 'flow', 'basics', 'badges', 'record', 'note'].includes(kind) ? kind : 'home'); pill();

@@ -75,7 +75,7 @@ function card(L) {
     <p class="now"><b>지금 상황</b>${esc(L.now)}</p></div>
     <ol class="steps">${L.steps.map(step).join('')}</ol>
     <details class="stuck"><summary>더 알아보기 — 막혔을 때 · 주의 · 실측</summary>${extra}</details>
-    ${L.ep ? `<p class="tonote"><a href="${noteLink(L.ep)}" data-note="${L.ep}">📒 도현의 노트 — ${esc(BLANKS[L.ep].replace(/^(빈칸 \d · |\+ )/, ''))} 정확히 알아보기 →</a></p>` : ''}
+    ${L.ep ? `<p class="tonote"><a href="${noteLink(L.ep)}" data-note="${L.ep}">📒 도현의 GitHub Tips — ${esc(BLANKS[L.ep].replace(/^(빈칸 \d · |\+ )/, ''))} 정확히 알아보기 →</a></p>` : ''}
   </article>`;
 }
 

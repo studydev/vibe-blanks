@@ -92,7 +92,7 @@ function lineHtml(L, ln, isNew) {
         <dl><dt>남는 것</dt><dd>${esc(L.left)}</dd>${L.notes ? `<dt>알아 둘 것</dt><dd>${L.notes.map(esc).join('<br>')}</dd>` : ''}</dl>
         ${L.stuck ? `<details class="more"><summary>막혔을 때</summary><dl>${L.stuck.map(([a, b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join('')}</dl></details>` : ''}
         <details class="more"><summary>실측 (실제로 해 본 결과)</summary><p class="measured">${(m.ok || []).map(x => `<span class="ok">✓ ${esc(x)}</span>`).join('')}${(m.tbd || []).map(x => `<span class="tbd">TBD ${esc(x)}</span>`).join('')}</p></details>
-        <div class="next-row">${nextEp ? `<a class="primary" href="#/ep/${nextEp}">${epName(nextEp)} 읽기 →</a>` : `<a class="primary" href="#/">처음으로 →</a>`}${L.ep ? `<a class="ghost" href="${noteLink(L.ep)}" data-note="${L.ep}">📒 도현의 노트</a>` : ''}${LABS[i + 1] ? `<a class="ghost" href="#/lab/${LABS[i + 1].id}">다음 실습 ${LABS[i + 1].id}</a>` : ''}</div></div>`;
+        <div class="next-row">${nextEp ? `<a class="primary" href="#/ep/${nextEp}">${epName(nextEp)} 읽기 →</a>` : `<a class="primary" href="#/">처음으로 →</a>`}${L.ep ? `<a class="ghost" href="${noteLink(L.ep)}" data-note="${L.ep}">📒 도현의 GitHub Tips</a>` : ''}${LABS[i + 1] ? `<a class="ghost" href="#/lab/${LABS[i + 1].id}">다음 실습 ${LABS[i + 1].id}</a>` : ''}</div></div>`;
     }
   }
   return '';
